@@ -1,0 +1,14 @@
+# A docker compose file to start a PostgreSQL DB
+version: '3.1'
+
+services:
+
+  postgres:
+    image: postgres:16.0-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "showcase"
+      POSTGRES_USER: "showcase"
+      POSTGRES_PASSWORD: "showcase"
+

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>de.gedoplan</groupId>
+    <artifactId>build-master</artifactId>
+    <version>2024.2.2</version>
+  </parent>
+
+  <groupId>de.gedoplan.showcase</groupId>
+  <artifactId>liberty-demo</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <packaging>pom</packaging>
+
+  <properties>
+    <java.code.version>21</java.code.version>
+
+    <lombok.version>1.18.34</lombok.version>
+
+    <liberty-maven-plugin.version>3.10.3</liberty-maven-plugin.version>
+
+    <openliberty.groupId>io.openliberty.beta</openliberty.groupId>
+    <openliberty.artifactId>openliberty-runtime</openliberty.artifactId>
+    <openliberty.version>24.0.0.5-beta</openliberty.version>
+
+    <postgres.version>42.6.0</postgres.version>
+
+    <http.port>8080</http.port>
+    <https.port>8443</https.port>
+    <liberty.var.app.context.root>/</liberty.var.app.context.root>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>gedoplanPublic</id>
+      <url>https://maven.gedoplan.de/repository/maven-public</url>
+    </repository>
+  </repositories>
+
+  <modules>
+    <module>liberty-data</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- JEE-Standard -->
+      <!-- <dependency>
+        <groupId>jakarta.platform</groupId>
+        <artifactId>jakarta.jakartaee-api</artifactId>
+        <version>10.0.0</version>
+      </dependency> -->
+
+      <!-- GEDOPLAN-baselibs -->
+      <!-- <dependency>
+        <groupId>de.gedoplan</groupId>
+        <artifactId>baselibs-persistence</artifactId>
+        <version>10.1</version>
+      </dependency> -->
+
+      <!-- <dependency>
+        <groupId>de.gedoplan</groupId>
+        <artifactId>baselibs-utils</artifactId>
+        <version>10.3</version>
+      </dependency> -->
+
+      <!-- Logging -->
+      <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.3.0</version>
+      </dependency>
+
+      <!-- Lombok -->
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.34</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+
+    <plugins>
+      <!--
+        Use JDK matching ${java.code.version}.
+        Please provide a ~/.m2/toolchains.xml like the sample toolchains.xml.sample
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-toolchains-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>toolchain</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <toolchains>
+            <jdk>
+              <version>${java.code.version}</version>
+            </jdk>
+          </toolchains>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>io.openliberty.tools</groupId>
+        <artifactId>liberty-maven-plugin</artifactId>
+        <version>${liberty-maven-plugin.version}</version>
+        <configuration>
+          <assemblyArtifact>
+            <groupId>${openliberty.groupId}</groupId>
+            <artifactId>${openliberty.artifactId}</artifactId>
+            <version>${openliberty.version}</version>
+            <type>zip</type>
+          </assemblyArtifact>
+          <serverName>ShowcaseServer</serverName>
+          <bootstrapProperties>
+            <default.http.port>${http.port}</default.http.port>
+            <default.https.port>${https.port}</default.https.port>
+            <app.context.root>${liberty.var.app.context.root}</app.context.root>
+          </bootstrapProperties>
+          <copyDependencies>
+            <dependencyGroup>
+              <!-- Relative to server config directory -->
+              <location>lib/postgres</location>
+              <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgres.version}</version>
+              </dependency>
+            </dependencyGroup>
+          </copyDependencies>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <http.port>${http.port}</http.port>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+
+</project>
