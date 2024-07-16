@@ -19,8 +19,6 @@
   <properties>
     <java.code.version>21</java.code.version>
 
-    <lombok.version>1.18.34</lombok.version>
-
     <liberty-maven-plugin.version>3.10.3</liberty-maven-plugin.version>
 
     <openliberty.groupId>io.openliberty.beta</openliberty.groupId>
