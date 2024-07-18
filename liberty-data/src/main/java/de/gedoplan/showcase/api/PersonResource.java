@@ -7,6 +7,7 @@ import de.gedoplan.showcase.entity.Person;
 import de.gedoplan.showcase.persistence.PersonRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -31,6 +32,7 @@ public class PersonResource {
 
   @Inject
   PersonRepository personRepository;
+  // PRep2 personRepository;
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -50,7 +52,8 @@ public class PersonResource {
   @PUT
   @Path(ID_TEMPLATE)
   @Consumes(MediaType.APPLICATION_JSON)
-  // @Transactional(rollbackOn = Exception.class)
+  // TODO Works even without @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public void update(@PathParam(ID_NAME) Integer id, Person person) {
     if (!id.equals(person.getId())) {
       throw new BadRequestException("id of updated object must not be changed");
@@ -64,7 +67,7 @@ public class PersonResource {
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
-  // @Transactional(rollbackOn = Exception.class)
+  @Transactional(rollbackOn = Exception.class)
   public Response create(Person person, @Context UriInfo uriInfo) {
     if (person.getId() != null) {
       throw new BadRequestException("id of new entry must not be pre-set");
@@ -82,9 +85,15 @@ public class PersonResource {
 
   @DELETE
   @Path(ID_TEMPLATE)
-  // @Transactional(rollbackOn = Exception.class)
+  @Transactional(rollbackOn = Exception.class)
   public void delete(@PathParam(ID_NAME) Integer id) {
     this.personRepository.deleteById(id);
   }
 
+  @GET
+  @Path("byname/{name}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public List<Person> findByName(@PathParam("name") String name) {
+    return this.personRepository.findByName(name).toList();
+  }
 }

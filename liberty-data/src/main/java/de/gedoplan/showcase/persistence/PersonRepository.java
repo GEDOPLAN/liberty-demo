@@ -1,20 +1,19 @@
 package de.gedoplan.showcase.persistence;
 
-import de.gedoplan.showcase.entity.Person;
+import java.util.stream.Stream;
 
+import de.gedoplan.showcase.entity.Person;
 import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Find;
-import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 
 
 @Repository
+// TODO Without @Transactional transactions seem to be started automatically
+@Transactional(TxType.MANDATORY)
 public interface PersonRepository extends CrudRepository<Person, Integer> {
-  // TODO This should work without annotation
-  // @Query("select count(x) from Person x")
   long count();
 
-  // TODO This should work without annotation
-  // @Find
-  Person findByName(String name);
+  Stream<Person> findByName(String name);
 }

@@ -1,4 +1,4 @@
-<server description="Shocase Liberty server">
+<server description="Showcase Liberty server">
 	<featureManager>
     <!-- Using EE10 until EE11 release -->
 		<feature>beanValidation-3.0</feature>	   

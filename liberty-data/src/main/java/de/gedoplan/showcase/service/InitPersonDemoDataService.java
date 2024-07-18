@@ -9,6 +9,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 
 @ApplicationScoped
@@ -24,7 +25,7 @@ public class InitPersonDemoDataService {
    *
    * @param event Application scope initialization event
    */
-  // @Transactional
+  @Transactional
   void createDemoData(@Observes Startup event) {
     try {
       if (this.personRepository.count() == 0) {
