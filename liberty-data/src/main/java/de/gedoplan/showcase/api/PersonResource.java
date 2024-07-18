@@ -8,6 +8,7 @@ import de.gedoplan.showcase.persistence.PersonRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -93,6 +94,8 @@ public class PersonResource {
   @GET
   @Path("byname/{name}")
   @Produces(MediaType.APPLICATION_JSON)
+  // This works with TX annotation only, whereas getAll() works without
+  @Transactional(rollbackOn = Exception.class)
   public List<Person> findByName(@PathParam("name") String name) {
     return this.personRepository.findByName(name).toList();
   }
