@@ -66,7 +66,7 @@ public class InitPublisherDemoDataService {
     try {
       if (this.publisherRepository.count() == 0) {
         Stream.of(this.testBooks).forEach(this.bookRepository::save);
-        // Stream.of(this.testPublishers).forEach(this.publisherRepository::save);
+        Stream.of(this.testPublishers).forEach(this.publisherRepository::save);
         LOG.debug("Created demo data");
       }
     } catch (Exception e) {
